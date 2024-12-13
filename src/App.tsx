@@ -21,7 +21,7 @@ call.join({ create: true });
 export const MyUILayout = () => {
   const call = useCall();
   console.log(call?.id);
-  const { useCallCallingState, useParticipantCount,useLocalParticipant,useRemoteParticipants } = useCallStateHooks();
+  const { useCallCallingState,useLocalParticipant,useRemoteParticipants } = useCallStateHooks();
   const callingState = useCallCallingState();
   const localParticipant =  useLocalParticipant();
   const remoteParticipant =  useRemoteParticipants();

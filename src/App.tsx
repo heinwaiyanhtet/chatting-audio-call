@@ -1,104 +1,122 @@
-import { CallingState, ParticipantView, StreamCall, StreamTheme, StreamVideo, StreamVideoClient, StreamVideoParticipant, useCall, useCallStateHooks, User } from '@stream-io/video-react-sdk';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import {
+  StreamVideo,
+  StreamCall,
+  StreamTheme,
+  ParticipantView,
+  StreamVideoClient,
+  useCall,
+  useCallStateHooks,
+  CallingState,
+} from '@stream-io/video-react-sdk';
 
+// Hardcoded constants
 const apiKey = 'mmhfdzb5evj2';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Byb250by5nZXRzdHJlYW0uaW8iLCJzdWIiOiJ1c2VyL0dlbmVyYWxfRG9kb25uYSIsInVzZXJfaWQiOiJHZW5lcmFsX0RvZG9ubmEiLCJ2YWxpZGl0eV9pbl9zZWNvbmRzIjo2MDQ4MDAsImlhdCI6MTczNDAyODA5NCwiZXhwIjoxNzM0NjMyODk0fQ.SPmzOEvfAnIXxlFlTxocrv-_Gdm4ezdmVXAn1S58QqM';
+const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Byb250by5nZXRzdHJlYW0uaW8iLCJzdWIiOiJ1c2VyL0dlbmVyYWxfRG9kb25uYSIsInVzZXJfaWQiOiJHZW5lcmFsX0RvZG9ubmEiLCJ2YWxpZGl0eV9pbl9zZWNvbmRzIjo2MDQ4MDAsImlhdCI6MTczNDAyODA5NCwiZXhwIjoxNzM0NjMyODk0fQ.SPmzOEvfAnIXxlFlTxocrv-_Gdm4ezdmVXAn1S58QqM';
 const userId = 'General_Dodonna';
 const callId = 'yj0SzmiPfhan';
 
-// set up the user object
-
-const user: User = {
-  id: userId,
-  name: 'Oliver',
-  image: 'https://getstream.io/random_svg/?id=oliver&name=Oliver',
-};
-
-
-const client = new StreamVideoClient({ apiKey, user, token });
-const call = client.call('default', callId);
-call.join({ create: true });
-
-export const MyUILayout = () => {
-  const call = useCall();
-  console.log(call?.id);
-  const { useCallCallingState,useLocalParticipant,useRemoteParticipants } = useCallStateHooks();
-  const callingState = useCallCallingState();
-  const localParticipant =  useLocalParticipant();
-  const remoteParticipant =  useRemoteParticipants();
-
-  if (callingState !== CallingState.JOINED) 
-  {
-    return <div>Loading...</div>;
-  }
-
-  return (
-      <StreamTheme style={{ position: 'relative' }}>
-      <MyParticipantList participants={remoteParticipant} />
-      <MyFloatingLocalParticipant participant={localParticipant} />
-    </StreamTheme>
-  );
-};
-
-
-export const MyParticipantList = (props: {
-  participants: StreamVideoParticipant[];
-}) => {
-  const { participants } = props;
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '8px',
-        width: '100vw',
-      }}
-    >
-      {participants.map((participant) => (
-        <div
-          style={{ width: '100%', aspectRatio: '3 / 2' }}
-          key={participant.sessionId}
-        >
-          <ParticipantView
-            muteAudio
-            participant={participant}
-            key={participant.sessionId}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export const MyFloatingLocalParticipant = (props: {
-  participant?: StreamVideoParticipant;
-}) => {
-  const { participant } = props;
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '15px',
-        left: '15px',
-        width: '240px',
-        height: '135px',
-        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 10px 3px',
-        borderRadius: '12px',
-      }}
-    >
-      {participant && (
-        <ParticipantView muteAudio participant={participant} />
-      )}
-    </div>
-  );
-};
-
-
+// Main App Component
 export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Join />} />
+        <Route path="/call" element={<Call />} />
+      </Routes>
+    </Router>
+  );
+}
+
+// Join Screen Component
+const Join = () => {
+  const navigate = useNavigate();
+
+  const handleJoin = () => {
+    // Navigate directly to the Call screen
+    navigate('/call');
+  };
+
+  return (
+    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Join a Call</h2>
+      <p>
+        This is a hardcoded setup. Click "Join Call" to directly enter the call with pre-configured details.
+      </p>
+      <button
+        onClick={handleJoin}
+        style={{
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#007BFF',
+          color: '#FFF',
+          border: 'none',
+          cursor: 'pointer',
+          marginTop: '10px',
+        }}
+      >
+        Join Call
+      </button>
+    </div>
+  );
+};
+
+// Call Screen Component
+const Call = () => {
+  // Initialize Stream Video Client
+  const client = new StreamVideoClient({
+    apiKey,
+    user: {
+      id: userId,
+      name: 'General Dodonna',
+      image: `https://getstream.io/random_svg/?id=${userId}&name=General+Dodonna`,
+    },
+    token,
+  });
+
+  // Set up the call object
+  const call = client.call('default', callId);
+
+  // Join the call
+  call.join().catch((err) => console.error('Error joining call:', err));
+
   return (
     <StreamVideo client={client}>
       <StreamCall call={call}>
-        <MyUILayout />
+        <CallUI />
       </StreamCall>
     </StreamVideo>
   );
-}
+};
+
+// Call UI Component
+const CallUI = () => {
+  const { useCallCallingState, useLocalParticipant, useRemoteParticipants } =
+    useCallStateHooks();
+  const callingState = useCallCallingState();
+  const localParticipant = useLocalParticipant();
+  const remoteParticipants = useRemoteParticipants();
+
+  if (callingState !== CallingState.JOINED) {
+    return <div>Connecting...</div>;
+  }
+
+  return (
+    <StreamTheme>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', padding: '10px' }}>
+        {remoteParticipants.map((participant) => (
+          <ParticipantView
+            key={participant.sessionId}
+            participant={participant}
+            muteAudio
+          />
+        ))}
+      </div>
+      <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
+        {localParticipant && <ParticipantView participant={localParticipant} />}
+      </div>
+    </StreamTheme>
+  );
+};

@@ -77,7 +77,7 @@ const Call = () => {
   // Set up the call object
   const call = client.call('default', callId);
 
-  // Join the call
+  // Join the call without specifying 'audio' or 'video'
   call.join().catch((err) => console.error('Error joining call:', err));
 
   return (
@@ -108,12 +108,17 @@ const CallUI = () => {
           <ParticipantView
             key={participant.sessionId}
             participant={participant}
-            muteAudio
+            muteAudio={false} // Enable audio for remote participants
           />
         ))}
       </div>
       <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
-        {localParticipant && <ParticipantView participant={localParticipant} />}
+        {localParticipant && (
+          <ParticipantView
+            participant={localParticipant}
+            muteAudio={false} // Enable audio for local participant
+          />
+        )}
       </div>
     </StreamTheme>
   );

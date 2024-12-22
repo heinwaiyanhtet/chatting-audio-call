@@ -9,11 +9,10 @@ import {
   CallingState,
 } from '@stream-io/video-react-sdk';
 
-// Hardcoded constants
-const apiKey = 'mmhfdzb5evj2';
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Byb250by5nZXRzdHJlYW0uaW8iLCJzdWIiOiJ1c2VyL0dlbmVyYWxfRG9kb25uYSIsInVzZXJfaWQiOiJHZW5lcmFsX0RvZG9ubmEiLCJ2YWxpZGl0eV9pbl9zZWNvbmRzIjo2MDQ4MDAsImlhdCI6MTczNDAyODA5NCwiZXhwIjoxNzM0NjMyODk0fQ.SPmzOEvfAnIXxlFlTxocrv-_Gdm4ezdmVXAn1S58QqM';
-const userId = 'General_Dodonna';
+// Updated Constants
+const apiKey = 'dz5f4d5kzrue';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZ2VudGxlLWRldy00IiwiZXhwIjoxNzM0ODk1NzM2fQ.nneU6_qq1GAV2mUxlGmKj0PrnminqQ2DBajDVsfHm14';
+const userId = 'gentle-dew-4';
 const callId = 'yj0SzmiPfhan';
 
 // Main App Component
@@ -33,7 +32,6 @@ const Join = () => {
   const navigate = useNavigate();
 
   const handleJoin = () => {
-    // Navigate directly to the Call screen
     navigate('/call');
   };
 
@@ -63,21 +61,18 @@ const Join = () => {
 
 // Call Screen Component
 const Call = () => {
-  // Initialize Stream Video Client
   const client = new StreamVideoClient({
     apiKey,
     user: {
       id: userId,
-      name: 'General Dodonna',
-      image: `https://getstream.io/random_svg/?id=${userId}&name=General+Dodonna`,
+      name: 'gentle',
+      image: `https://getstream.io/random_svg/?id=${userId}&name=gentle`,
     },
     token,
   });
 
-  // Set up the call object
   const call = client.call('default', callId);
 
-  // Join the call without specifying 'audio' or 'video'
   call.join().catch((err) => console.error('Error joining call:', err));
 
   return (
@@ -108,7 +103,7 @@ const CallUI = () => {
           <ParticipantView
             key={participant.sessionId}
             participant={participant}
-            muteAudio={false} // Enable audio for remote participants
+            muteAudio={false}
           />
         ))}
       </div>
@@ -116,7 +111,7 @@ const CallUI = () => {
         {localParticipant && (
           <ParticipantView
             participant={localParticipant}
-            muteAudio={false} // Enable audio for local participant
+            muteAudio={false}
           />
         )}
       </div>
